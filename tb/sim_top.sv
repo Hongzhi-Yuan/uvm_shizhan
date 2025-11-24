@@ -4,7 +4,7 @@ import uvm_pkg::*;
 
 
 `include "print_env_info.sv"
-
+`include "my_test_random.sv"
 
 
  module  sim_top;
@@ -23,7 +23,13 @@ import uvm_pkg::*;
 		.rxd  (rxd),
 		.tx_en(tx_en),
 		.txd  (txd)
-	); 
+		); 
+	 
+	 
+	initial begin
+		test_random();
+	end 
+	 
 	 
 	initial begin
 		clock = 1;
