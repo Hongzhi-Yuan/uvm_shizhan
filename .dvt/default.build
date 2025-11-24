@@ -1,0 +1,13 @@
+# Automatically identify and compile all the source files in the project directory.
+# DO NOT explicitly list files/directories in 'dvt_init_auto' sections. Use 'dvt_init' sections instead.
+
++incdir+/home/zeke/EDA/uvm-1.2/src
+/home/zeke/EDA/uvm-1.2/src/uvm_pkg.sv
+
+
+
+-f tb/filelist.f
+
+
+
+-top design_top
