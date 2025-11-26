@@ -2,8 +2,7 @@
 
 import uvm_pkg::*;
 
-
-`include "print_env_info.sv"
+`include "my_driver.sv"
 
 
 
@@ -11,8 +10,8 @@ import uvm_pkg::*;
 	 
 	reg clock;
 	reg reset;
-	wire [7:0] rxd;
-	wire rx_dv;
+	reg [7:0] rxd;
+	reg rx_dv;
 	wire [7:0] txd;
 	wire tx_en;
 
@@ -23,7 +22,19 @@ import uvm_pkg::*;
 		.rxd  (rxd),
 		.tx_en(tx_en),
 		.txd  (txd)
-	); 
+		); 
+	
+	
+	 
+	my_driver drv;
+	
+	initial begin
+		drv = new("drv", null);
+		drv.main_phase(null);
+	end
+	 
+	 
+	 
 	 
 	initial begin
 		clock = 1;
