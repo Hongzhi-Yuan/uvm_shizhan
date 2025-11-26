@@ -26,11 +26,10 @@ import uvm_pkg::*;
 	
 	
 	 
-	my_driver drv;
+	
 	
 	initial begin
-		drv = new("drv", null);
-		drv.main_phase(null);
+		run_test("my_drive");
 	end
 	 
 	 
@@ -49,8 +48,7 @@ import uvm_pkg::*;
 		#200ns;
 		reset = 0;
 		
-		#4000ns;
-		$finish();
+	
 	end 
 	
 	
