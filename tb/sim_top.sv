@@ -2,6 +2,7 @@
 
 import uvm_pkg::*;
 
+`include "my_interfaces.sv"
 `include "my_driver.sv"
 
 
@@ -10,18 +11,19 @@ import uvm_pkg::*;
 	 
 	reg clock;
 	reg reset;
-	reg [7:0] rxd;
-	reg rx_dv;
-	wire [7:0] txd;
-	wire tx_en;
+	 
+	my_if input_if(clock, reset);
+	my_if output_if(clock, reset);
+	
+
 
 	design_top u_design_top (
 		.clock(clock),
 		.reset(reset),
-		.rx_dv(rx_dv),
-		.rxd  (rxd),
-		.tx_en(tx_en),
-		.txd  (txd)
+		.rx_dv(input_if.valid),
+		.rxd  (input_if.data),
+		.tx_en(output_if.valid),
+		.txd  (output_if.data)
 		); 
 	
 	
@@ -32,6 +34,9 @@ import uvm_pkg::*;
 		run_test("my_driver");
 	end
 	 
+	initial begin
+		uvm_config_db#(virtual  my_if)::set(null, "uvm_test_top", "vif", input_if);
+	end
 	 
 	initial begin
 		clock = 1;
@@ -45,8 +50,6 @@ import uvm_pkg::*;
 		reset = 1;
 		#200ns;
 		reset = 0;
-		
-	
 	end 
 	
 	
