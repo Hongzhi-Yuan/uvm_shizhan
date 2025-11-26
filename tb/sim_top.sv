@@ -29,10 +29,8 @@ import uvm_pkg::*;
 	
 	
 	initial begin
-		run_test("my_drive");
+		run_test("my_driver");
 	end
-	 
-	 
 	 
 	 
 	initial begin

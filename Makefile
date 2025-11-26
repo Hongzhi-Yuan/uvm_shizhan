@@ -82,8 +82,11 @@ endif
 
 
 #------------------ UVM 运行参数 ------------------
-RUN_OPTS += +UVM_TESTNAME=$(TEST) \
+#RUN_OPTS += +UVM_TESTNAME=$(TEST) \
             +ntb_random_seed=$(SEED) \
+            +UVM_VERBOSITY=UVM_MEDIUM
+
+RUN_OPTS += +ntb_random_seed=$(SEED) \
             +UVM_VERBOSITY=UVM_MEDIUM
 
 
@@ -137,7 +140,7 @@ verdi:
 clean:
 	rm -rf $(SIM_DIR)/*.log $(SIM_DIR)/*.fsdb $(SIM_DIR)/*.vpd \
 	       $(SIM_DIR)/*.key $(SIM_DIR)/DVEfiles $(SIM_DIR)/verdiLog \
-	       $(SIM_DIR)/novas* $(SIM_DIR)/cov.vdb  \
+	       $(SIM_DIR)/novas* $(SIM_DIR)/cov.vdb  $(SIM_DIR)/* \
 	       novas.*  verdiLog 
 
 
