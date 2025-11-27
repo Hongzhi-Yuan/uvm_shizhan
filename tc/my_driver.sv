@@ -35,11 +35,11 @@ class my_driver extends uvm_driver;
 		
 		repeat(2) begin 
 			tr = new("tr");
-			assert(tr.randomize() with {pload.size() == 200;}) ;
-			tr.print();
+			assert(tr.randomize() with {pload.size() == 50;}) ;
 			drive_one_pkt(tr);
+			repeat (10) @(posedge vif.clock);
+				
 		end 
-	
 		
 		`uvm_info(get_full_name(), "main_phase called end", UVM_LOW)
 		phase.drop_objection(this);
@@ -49,56 +49,63 @@ class my_driver extends uvm_driver;
 	virtual task drive_one_pkt(my_transaction tr);
 		bit [47:0] data_temp;
 		bit [7:0] data_q[$];
+		byte  pload_tmp[];
 		
 		// push dmac
 		data_temp = tr.dmac;
-		for(int i = 0; i < 6; i++)begin 
+		for (int i = 0; i < 6; i++) begin 
 			data_q.push_back(data_temp[47:40]);
-			data_temp = data_temp << 8;
+			data_temp <<= 8;
 		end 
 		
-		
-		//push smac
+		// push smac
 		data_temp = tr.smac;
-		for(int i = 0; i < 6; i++)begin 
+		for (int i = 0; i < 6; i++) begin 
 			data_q.push_back(data_temp[47:40]);
-			data_temp = data_temp << 8;
+			data_temp <<= 8;
 		end 
 		
-		
-		//push type
+		// push ether_type
 		data_temp = tr.ether_type;
-		for(int i = 0; i < 2; i++)begin 
+		for (int i = 0; i < 2; i++) begin 
 			data_q.push_back(data_temp[15:8]);
-			data_temp = data_temp << 8;
+			data_temp <<= 8;
 		end 
 		
 		
-		//push pload
-		for (int i = tr.pload.size() - 1; i > 0; i--)  begin 
-			data_q.push_back(tr.pload[i]);
+		// push pload
+		pload_tmp = tr.pload;
+		for (int i = 0; i <pload_tmp.size(); i++) begin
+			data_q.push_back(pload_tmp[i]);
 		end 
 		
-		
-		//push crc
+		// push crc
 		data_temp = tr.crc;
-		for (int i = 0; i < 4; i++) begin 
+		for (int i = 0; i < 4 ; i++) begin 
 			data_q.push_back(data_temp[31:24]);
-			data_temp = data_temp << 8;
+			data_temp <<= 8;
 		end 
 		
 		
-		// pop data to BUS
-		for (int i = 0; i < data_q.size(); i++) begin 
-			@(posedge  vif.clock);
-			vif.valid <= 'b1;
+		
+		// push BUS 
+//		for (int i = 0; i < data_q.size(); i++) begin 
+//			@(posedge vif.clock);
+//			vif.valid <=  'b1;
+//			vif.data <= data_q.pop_front();
+//		end 
+		
+		while (!data_q.empty()) begin 
+			@(posedge vif.clock);
+			vif.valid <=  'b1;
 			vif.data <= data_q.pop_front();
 		end 
 		
-		@(posedge  vif.clock);
-		vif.valid <= 'b0;
-		vif.data <= 'b0;
 		
+		@(posedge vif.clock);
+		vif.valid <= 'b0;
+		vif.data  <= 'b0;
+	
 	endtask
 	
 	
