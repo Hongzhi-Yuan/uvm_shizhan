@@ -7,7 +7,7 @@ class my_agent extends uvm_agent;
 	my_driver drv;
 	my_monitor mon;
 	
-	
+	uvm_analysis_port#(my_transaction) ap;
 	
 	`uvm_component_utils(my_agent)
 
@@ -22,6 +22,12 @@ class my_agent extends uvm_agent;
 		if (is_active)
 			drv = my_driver::type_id::create("drv", this);
 	endfunction 
+	
+	
+	virtual function  void connect_phase(uvm_phase phase);
+		ap = mon.ap;
+	endfunction 
+	
 	
 	
 	

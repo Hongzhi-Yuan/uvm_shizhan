@@ -5,6 +5,7 @@
 class my_monitor extends uvm_monitor;
 	
 	virtual my_if vif;
+	uvm_analysis_port#(my_transaction) ap;
 	
 	`uvm_component_utils(my_monitor)
 	
@@ -15,6 +16,7 @@ class my_monitor extends uvm_monitor;
 	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
 			
+		ap = new("ap", this);
 		if (!uvm_config_db#(virtual my_if)::get(this, "", "vif", vif))
 			`uvm_fatal(get_full_name(), "virtual interface must be set!!!!!!!!!!!!!")
 		
@@ -27,7 +29,8 @@ class my_monitor extends uvm_monitor;
 			tr = new("tr");
 			assert(tr.randomize with {tr.pload.size() == 50;});
 			collect_one_pkt(tr);
-			tr.print();
+//			tr.print();
+			ap.write(tr);
 		end 
 	endtask 
 	
