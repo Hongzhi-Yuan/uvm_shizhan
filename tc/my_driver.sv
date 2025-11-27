@@ -22,7 +22,7 @@ class my_driver extends uvm_driver;
 	
 	virtual task main_phase(uvm_phase phase);
 		my_transaction  tr;
-		phase.phase_done.set_drain_time(this, 200ns);
+//		phase.phase_done.set_drain_time(this, 200ns);
 		phase.raise_objection(this);
 	
 		`uvm_info(get_full_name(), "main_phase called begin", UVM_LOW)
@@ -36,6 +36,7 @@ class my_driver extends uvm_driver;
 		repeat(2) begin 
 			tr = new("tr");
 			assert(tr.randomize() with {pload.size() == 200;}) ;
+			tr.print();
 			drive_one_pkt(tr);
 		end 
 	
