@@ -3,7 +3,7 @@
 
 
 
-class my_driver extends uvm_driver;
+class my_driver extends uvm_driver#(my_transaction);
 	
 	virtual  my_if vif;
 	
@@ -21,7 +21,7 @@ class my_driver extends uvm_driver;
 	endfunction 
 	
 	virtual task main_phase(uvm_phase phase);
-		my_transaction  tr;
+//		my_transaction  tr;
 //		phase.phase_done.set_drain_time(this, 200ns);
 		phase.raise_objection(this);
 	
@@ -34,9 +34,11 @@ class my_driver extends uvm_driver;
 		@(negedge  vif.reset);
 		
 		repeat(2) begin 
-			tr = new("tr");
-			assert(tr.randomize() with {pload.size() == 50;}) ;
-			drive_one_pkt(tr);
+//			tr = new("tr");
+			
+			req = new("req");
+			assert(req.randomize() with {req.pload.size() == 50;}) ;
+			drive_one_pkt(req);
 			repeat (10) @(posedge vif.clock);
 				
 		end 
@@ -47,45 +49,11 @@ class my_driver extends uvm_driver;
 	
 	
 	virtual task drive_one_pkt(my_transaction tr);
-		bit [47:0] data_temp;
-		bit [7:0] data_q[$];
-		byte  pload_tmp[];
+
+		bit [7:0]  data_q []	;
+		int psize;
 		
-		// push dmac
-		data_temp = tr.dmac;
-		for (int i = 0; i < 6; i++) begin 
-			data_q.push_back(data_temp[47:40]);
-			data_temp <<= 8;
-		end 
-		
-		// push smac
-		data_temp = tr.smac;
-		for (int i = 0; i < 6; i++) begin 
-			data_q.push_back(data_temp[47:40]);
-			data_temp <<= 8;
-		end 
-		
-		// push ether_type
-		data_temp = tr.ether_type;
-		for (int i = 0; i < 2; i++) begin 
-			data_q.push_back(data_temp[15:8]);
-			data_temp <<= 8;
-		end 
-		
-		
-		// push pload
-		pload_tmp = tr.pload;
-		for (int i = 0; i <pload_tmp.size(); i++) begin
-			data_q.push_back(pload_tmp[i]);
-		end 
-		
-		// push crc
-		data_temp = tr.crc;
-		for (int i = 0; i < 4 ; i++) begin 
-			data_q.push_back(data_temp[31:24]);
-			data_temp <<= 8;
-		end 
-		
+		psize = tr.pack_bytes(data_q)/8;
 		
 		
 		// push BUS 
@@ -95,10 +63,10 @@ class my_driver extends uvm_driver;
 //			vif.data <= data_q.pop_front();
 //		end 
 		
-		while (!data_q.empty()) begin 
+		for (int i = 0; i < psize; i++) begin 
 			@(posedge vif.clock);
-			vif.valid <=  'b1;
-			vif.data <= data_q.pop_front();
+			vif.valid <= 'b1;
+			vif.data <= data_q[i];
 		end 
 		
 		
