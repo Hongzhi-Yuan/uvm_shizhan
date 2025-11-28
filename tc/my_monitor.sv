@@ -23,7 +23,7 @@ class my_monitor extends uvm_monitor;
 	endfunction 
 	
 	
-	virtual task main_phase(uvm_phase phase);
+	virtual task run_phase(uvm_phase phase);
 		my_transaction tr;
 		forever begin 
 			tr = new("tr");
@@ -82,14 +82,6 @@ class my_monitor extends uvm_monitor;
 		`uvm_info(get_full_name(), "END collect one pkt", UVM_LOW)
 
 	endtask 
-	
-	
-	
-	
-	
-	
-	
-	
 	
 endclass 
 

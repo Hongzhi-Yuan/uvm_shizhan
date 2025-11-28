@@ -84,10 +84,13 @@ endif
 #------------------ UVM 运行参数 ------------------
 #RUN_OPTS += +UVM_TESTNAME=$(TEST) \
             +ntb_random_seed=$(SEED) \
-            +UVM_VERBOSITY=UVM_MEDIUM
+            +UVM_VERBOSITY=UVM_MEDIUM \
+            
 
 RUN_OPTS += +ntb_random_seed=$(SEED) \
-            +UVM_VERBOSITY=UVM_MEDIUM
+            +UVM_VERBOSITY=UVM_MEDIUM \
+            +UVM_PHASE_TRACE \
+            +UVM_OBJECTION_TRACE
 
 
 #------------------ 波形开关 ------------------

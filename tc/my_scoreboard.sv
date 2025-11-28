@@ -7,8 +7,6 @@ class my_scoreboard extends uvm_scoreboard;
 	uvm_blocking_get_port#(my_transaction) exp_port;
 	uvm_blocking_get_port#(my_transaction) act_port;
 	
-	
-	
 	`uvm_component_utils(my_scoreboard)
 	function  new(string name = "my_scoreboard",  uvm_component parent = null );
 		super.new(name, parent);
@@ -20,11 +18,11 @@ class my_scoreboard extends uvm_scoreboard;
 		act_port = new("act_port", this);
 	endfunction 
 	
-	virtual task main_phase(uvm_phase phase);
+	virtual task run_phase(uvm_phase phase);
 		my_transaction  get_expect,  get_actual, tmp_tran;
 	   	bit result;
 	 
-	   	super.main_phase(phase);
+//	   	super.main_phase(phase);
 	   	fork 
 	      while (1) begin
 	         exp_port.get(get_expect);
@@ -54,9 +52,6 @@ class my_scoreboard extends uvm_scoreboard;
 	      end
 	   join
 	endtask 
-	
-	
-	
 endclass 
 
 

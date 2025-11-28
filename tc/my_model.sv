@@ -18,7 +18,7 @@ class my_model extends uvm_component ;
 		ap = new("ap", this);
 	endfunction
 	
-	virtual task  main_phase(uvm_phase phase);
+	virtual task  run_phase(uvm_phase phase);
 		my_transaction tr;
 		my_transaction new_tr;
 		while(1) begin 
